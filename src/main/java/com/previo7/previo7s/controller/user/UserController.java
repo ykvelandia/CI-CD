@@ -1,10 +1,9 @@
 package com.previo7.previo7s.controller.user;
 
 import com.previo7.previo7s.dto.UserDto;
-import com.previo7.previo7s.dto.UserMapper;
 import com.previo7.previo7s.dto.UserResponseDto;
-import com.previo7.previo7s.model.User;
 import com.previo7.previo7s.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static com.previo7.previo7s.utils.Constants.ADMIN_ROLE;
 
 @RestController
 @RequestMapping("/v1/user")
@@ -49,6 +50,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@RequestBody UserDto userDto){
         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
+    }
+
+    @RolesAllowed(ADMIN_ROLE)
+    @PostMapping("/createAdmin")
+    public ResponseEntity<UserResponseDto> createUserAdmin(@RequestBody UserDto userDto){
+        return new ResponseEntity<>(userService.createUserAdmin(userDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

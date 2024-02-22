@@ -1,5 +1,6 @@
 package com.previo7.previo7s.dto;
 
+import com.previo7.previo7s.model.RoleEnum;
 import com.previo7.previo7s.model.User;
 
 public class UserMapper {
@@ -23,4 +24,5 @@ public class UserMapper {
                 userDto.getPassword()
         );
     }
+
 }

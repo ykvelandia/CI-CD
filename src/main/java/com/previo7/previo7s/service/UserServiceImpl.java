@@ -3,6 +3,7 @@ package com.previo7.previo7s.service;
 import com.previo7.previo7s.dto.UserDto;
 import com.previo7.previo7s.dto.UserMapper;
 import com.previo7.previo7s.dto.UserResponseDto;
+import com.previo7.previo7s.model.RoleEnum;
 import com.previo7.previo7s.model.User;
 import com.previo7.previo7s.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDto createUser(UserDto userDto) {
         return UserMapper.userToUserResponseDto(userRepository.createUser(UserMapper.userDtoToUser(userDto)));
+    }
+
+    @Override
+    public UserResponseDto createUserAdmin(UserDto userDto) {
+        User userAdmin = UserMapper.userDtoToUser(userDto);
+        userAdmin.addRole(RoleEnum.ADMIN);
+        return UserMapper.userToUserResponseDto(userRepository.createUser(userAdmin));
     }
 
     @Override
