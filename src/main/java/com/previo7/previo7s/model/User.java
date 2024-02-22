@@ -104,10 +104,21 @@ public class User implements Serializable {
         return roles;
     }
 
+    public void setRoles(List<RoleEnum> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(RoleEnum role) {
+        if (!roles.contains(role)) {
+            roles.add(role);
+        }
+    }
+
     public void updateUser(User user){
         setName(user.getName());
         setLastName(user.getLastName());
         setBirthDate(user.getBirthDate());
+        setRoles(user.getRoles());
         this.update = LocalDateTime.now();
     }
 }

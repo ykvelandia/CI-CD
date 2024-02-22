@@ -3,6 +3,7 @@ package com.previo7.previo7s.controller.auth;
 import com.previo7.previo7s.dto.LoginDto;
 import com.previo7.previo7s.dto.TokenDto;
 import com.previo7.previo7s.exception.InvalidCredentialsException;
+import com.previo7.previo7s.exception.UserNotFoundException;
 import com.previo7.previo7s.model.User;
 import com.previo7.previo7s.security.encrypt.PasswordEncryptionService;
 import com.previo7.previo7s.security.jwt.OperationJwt;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("v1/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -33,8 +34,8 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto){
         User userFound = userService.findByEmail(loginDto.getEmail());
-        if (userFound != null){
-            throw new InvalidCredentialsException();
+        if (userFound == null){
+            throw new UserNotFoundException(loginDto.getEmail());
         }
 
         //UserResponseDto user = optionalUser.get();

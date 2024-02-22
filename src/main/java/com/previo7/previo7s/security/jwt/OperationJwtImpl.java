@@ -30,7 +30,7 @@ public class OperationJwtImpl implements OperationJwt{
 
     public TokenDto generateTokenDto(User user){
         Calendar expirationDate = Calendar.getInstance();
-        expirationDate.add(Calendar.MINUTE, TOKEN_DURATION_MINUTES);
+        expirationDate.add(Calendar.MINUTE, 30);
         String token = generateToken(user, expirationDate.getTime());
         return new TokenDto(token, expirationDate.getTime());
     }
