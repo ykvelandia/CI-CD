@@ -35,7 +35,17 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers(){
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+        try{
+            List<UserResponseDto> usersResponseDto = userService.getAllUsers();
+            if (usersResponseDto.isEmpty()){
+                return new ResponseEntity<>(usersResponseDto, HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+        }catch (RuntimeException e){
+            return new ResponseEntity("An error has occurred while retrieving users", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
     }
 
     @GetMapping("/{id}")
@@ -43,13 +53,17 @@ public class UserController {
         try {
             return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
         }catch (NoSuchElementException e){
-            return new ResponseEntity("The user " + id + " doesn't in the data base", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("The user " +  id + " doesn't exist in the database", HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@RequestBody UserDto userDto){
-        return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
+        try{
+            return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
+        }catch (RuntimeException e){
+            return new ResponseEntity("An error has occurred while retrieving users", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RolesAllowed(ADMIN_ROLE)
@@ -63,18 +77,28 @@ public class UserController {
         try {
             Boolean isUpdated = userService.updateUser(id, userDto);
             if (isUpdated){
-                return new ResponseEntity("The user updated ok", HttpStatus.OK);
+                return new ResponseEntity(true, HttpStatus.OK);
             }else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity(false, HttpStatus.NOT_FOUND);
             }
 
         }catch (NoSuchElementException e){
-            return new ResponseEntity("The user " + id + " doesn't in the data base", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("The user " + id + " doesn't exist in the data base", HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable String id){
-        return new ResponseEntity<>(userService.deleteUser(id), HttpStatus.OK);
+        try {
+            Boolean isDeleted = userService.deleteUser(id);
+            if (isDeleted){
+                return new ResponseEntity(true, HttpStatus.OK);
+            }else {
+                return new ResponseEntity(false, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (NoSuchElementException e){
+            return new ResponseEntity("The user " + id + " doesn't exist in the data base", HttpStatus.NOT_FOUND);
+        }
     }
 }
